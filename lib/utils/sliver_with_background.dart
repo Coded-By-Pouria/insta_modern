@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:insta_modern/utils/reverse_order_custom_scroll_view.dart';
 
 class SliverWithBackGround extends SingleChildRenderObjectWidget {
   final Color color;
@@ -80,26 +83,59 @@ class RenderSliverWithBackGround extends RenderSliver
   }
 
   late double _inAccessWidth;
-
+  ClipRRectLayer? _clipLayer;
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null && child!.geometry!.visible) {
       final SliverPhysicalParentData childParentData =
           child!.parentData! as SliverPhysicalParentData;
-      context.canvas
-        ..clipRRect(
-          RRect.fromLTRBR(
-            0,
-            offset.dy,
-            _inAccessWidth,
-            totalHeight,
-            radius,
-          ),
-        )
-        ..drawPaint(Paint()..color = color);
 
-      context.paintChild(child!, offset + childParentData.paintOffset);
+      double dy = totalHeight;
+
+      final sliverParentData = parentData! as SliverPhysicalContainerParentData;
+      if (sliverParentData.previousSibling != null &&
+          sliverParentData.previousSibling is RenderOutOfOrderSliver) {
+        dy = sliverParentData.previousSibling!.geometry!.paintExtent;
+      } else {
+        dy = 0;
+      }
+      _clipLayer = ClipRRectLayer(
+        clipRRect: RRect.fromLTRBR(
+          0,
+          max(dy, offset.dy),
+          _inAccessWidth,
+          totalHeight,
+          radius,
+        ),
+      );
+      context.pushLayer(
+        _clipLayer!,
+        (context, offset) {
+          context.canvas.drawPaint(Paint()..color = color);
+          context.paintChild(child!, offset + childParentData.paintOffset);
+        },
+        offset,
+      );
     }
+  }
+
+  @override
+  bool hitTestChildren(SliverHitTestResult result,
+      {required double mainAxisPosition, required double crossAxisPosition}) {
+    SliverPadding;
+    if (child != null && child!.geometry!.hitTestExtent > 0.0) {
+      child!.hitTest(result,
+          mainAxisPosition: mainAxisPosition,
+          crossAxisPosition: crossAxisPosition);
+    }
+    return false;
+  }
+
+  @override
+  void applyPaintTransform(covariant RenderObject child, Matrix4 transform) {
+    final SliverPhysicalParentData childParentData =
+        child.parentData! as SliverPhysicalParentData;
+    childParentData.applyPaintTransform(transform);
   }
 
   @override

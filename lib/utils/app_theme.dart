@@ -10,4 +10,5 @@ class AppTheme {
   static const activityScreenBg = Color.fromARGB(255, 228, 232, 238);
   static const double borderRadius = 20;
   static const double mainPagePostRadius = 40;
+  static const Duration fastAnimationDuration = Duration(milliseconds: 100);
 }

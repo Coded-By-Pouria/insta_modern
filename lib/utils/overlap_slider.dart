@@ -11,10 +11,12 @@ class OverlapSlider extends StatefulWidget {
   final Widget sliderPart;
   final Color? backgroundColor;
   final Widget? menu;
+  final ScrollController? scrollController;
   const OverlapSlider({
     required this.sliderPart,
     required this.staticPart,
     required this.maxVal,
+    this.scrollController,
     this.backgroundColor,
     this.menu,
     super.key,
@@ -25,38 +27,49 @@ class OverlapSlider extends StatefulWidget {
 }
 
 class _OverlapSliderState extends State<OverlapSlider> {
-  final ScrollController _controller = ScrollController();
   // ignore: prefer_typing_uninitialized_variables
   late final maxVal;
 
   @override
   void initState() {
+    if (widget.scrollController == null) {
+      _defaultScrollController = ScrollController();
+    }
     maxVal = widget.maxVal;
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
+    _defaultScrollController?.dispose();
   }
 
-  void _runAnimation(double position) {
+  ScrollController? _defaultScrollController;
+
+  get controller => widget.scrollController ?? _defaultScrollController;
+
+  void _runAnimation(double position, {void Function(double)? callback}) {
     _isAnimationing = true;
     Future.delayed(Duration.zero, () {
-      _controller
-          .animateTo(
-            position,
-            duration: Duration(milliseconds: 100),
-            curve: Curves.easeIn,
-          )
-          .whenComplete(() => _isAnimationing = false);
+      controller
+        ..addListener(() {
+          if (callback != null) {
+            callback(controller.offset);
+          }
+        })
+        ..animateTo(
+          position,
+          duration: Duration(milliseconds: 100),
+          curve: Curves.easeIn,
+        ).whenComplete(() => _isAnimationing = false);
     });
   }
 
   bool _isAnimationing = false;
   void _scrollEndHandler() {
-    final value = _controller.offset;
+    final value = controller.offset;
     if (value == 0 || value == maxVal || _isAnimationing) {
       return;
     }
@@ -81,7 +94,7 @@ class _OverlapSliderState extends State<OverlapSlider> {
       child: GestureDetector(
         onTapDown: (details) {
           if (_isAnimationing) {
-            (_controller.position as ScrollPositionWithSingleContext).goIdle();
+            (controller.position as ScrollPositionWithSingleContext).goIdle();
             _isAnimationing = false;
             _tapDown = true;
           }
@@ -93,7 +106,7 @@ class _OverlapSliderState extends State<OverlapSlider> {
           }
         },
         child: ReverseOrderScrollView(
-          controller: _controller,
+          controller: controller,
           slivers: [
             SliverPersistentHeader(
               floating: true,
@@ -103,9 +116,22 @@ class _OverlapSliderState extends State<OverlapSlider> {
                 child: widget.staticPart,
               ),
             ),
+            if (widget.menu != null)
+              OutOfOrderSliver(
+                key: UniqueKey(),
+                child: SliverPersistentHeader(
+                  floating: true,
+                  pinned: true,
+                  delegate: MySliverPersistentHeaderDelegate(
+                    maxVal: 45,
+                    child: widget.menu!,
+                  ),
+                ),
+              ),
             SliverWithBackGround(
               radius: const Radius.circular(AppTheme.mainPagePostRadius),
-              color: AppTheme.activityScreenBg,
+              color:
+                  widget.backgroundColor ?? Theme.of(context).backgroundColor,
               child: widget.sliderPart,
             ),
           ],

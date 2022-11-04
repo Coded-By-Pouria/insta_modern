@@ -1,15 +1,14 @@
 import 'dart:math' as math;
+import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/comments.dart';
 import 'package:insta_modern/Providers/posts.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/utils/overlap_slider.dart';
 import 'package:insta_modern/widgets/comment_card.dart';
-import 'package:insta_modern/widgets/expandable_positioned.dart';
 import 'package:insta_modern/widgets/post_list.dart';
 
 class PostDetailScreen extends StatefulWidget {
@@ -22,19 +21,19 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen>
     with SingleTickerProviderStateMixin {
-  bool _isExpand = false;
-  late AnimationController _controller;
+  // late AnimationController _controller;
   final height = 450.0;
   final ScrollController _scrollController = ScrollController();
 
+  late double _scrollOffset;
+  GlobalKey<State> _gk = GlobalKey();
+
   @override
   void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-
-    _controller.addListener(() {
+    _scrollOffset = 0;
+    _scrollController.addListener(() {
+      final lasOffset = _scrollOffset;
+      _scrollOffset = clampDouble(_scrollController.offset, 0, height);
       setState(() {});
     });
     super.initState();
@@ -42,9 +41,25 @@ class _PostDetailScreenState extends State<PostDetailScreen>
 
   final _navHeight = 80.0;
 
+  void _onTapHandler() {
+    final offset = _scrollController.offset;
+    if (offset >= height) {
+      _scrollController.animateTo(
+        0,
+        duration: Duration(seconds: 1),
+        curve: Curves.linear,
+      );
+    } else if (offset == 0) {
+      _scrollController.animateTo(
+        height,
+        duration: Duration(seconds: 1),
+        curve: Curves.linear,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ModalRoute.of(context). ;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       backgroundColor: AppTheme.activityScreenBg,
@@ -52,7 +67,6 @@ class _PostDetailScreenState extends State<PostDetailScreen>
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
-      // bottomNavigationBar: CommentInputBottomNavigationBar(),
       body: Column(
         children: [
           Expanded(
@@ -61,6 +75,8 @@ class _PostDetailScreenState extends State<PostDetailScreen>
               children: [
                 Positioned.fill(
                   child: OverlapSlider(
+                    scrollController: _scrollController,
+                    backgroundColor: AppTheme.activityScreenBg,
                     maxVal: height,
                     staticPart: HomePostItem(
                       post: widget.post,
@@ -94,24 +110,15 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                       ],
                     ),
                     menu: Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color: AppTheme.activityScreenBg,
-                        borderRadius: BorderRadius.circular(
-                          AppTheme.mainPagePostRadius,
+                      alignment: Alignment.center,
+                      child: Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationZ(
+                          math.pi * (_scrollOffset / height),
                         ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: _navHeight),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemBuilder: (context, index) => index == 0
-                              ? const Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: CommentCard(),
-                                )
-                              : CommentCard(),
-                          itemCount: 10,
+                        child: GestureDetector(
+                          onTap: _onTapHandler,
+                          child: const Icon(Icons.arrow_drop_up),
                         ),
                       ),
                     ),
@@ -127,69 +134,6 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                     ),
                   ),
                 ),
-                // Positioned(
-                //   top: (1 - _controller.value) * (height - keyboardHeight),
-                //   bottom: 0,
-                //   right: 0,
-                //   left: 0,
-                //   child: Column(
-                //     children: [
-                //       Container(
-                //         alignment: Alignment.center,
-                //         child: Transform(
-                //           alignment: Alignment.center,
-                //           transform: Matrix4.rotationZ(
-                //             math.pi * _controller.value,
-                //           ),
-                //           child: IconButton(
-                //             icon: Icon(Icons.arrow_drop_up),
-                //             onPressed: () {
-                //               setState(
-                //                 () {
-                //                   _isExpand = !_isExpand;
-                //                   switch (_controller.status) {
-                //                     case AnimationStatus.completed:
-                //                       _controller.reverse();
-                //                       break;
-                //                     case AnimationStatus.dismissed:
-                //                       _controller.forward();
-                //                       break;
-                //                     default:
-                //                   }
-                //                 },
-                //               );
-                //             },
-                //           ),
-                //         ),
-                //       ),
-                //       Expanded(
-                //         child: Container(
-                //           clipBehavior: Clip.hardEdge,
-                //           decoration: BoxDecoration(
-                //             color: AppTheme.activityScreenBg,
-                //             borderRadius: BorderRadius.circular(
-                //               AppTheme.mainPagePostRadius,
-                //             ),
-                //           ),
-                //           child: Padding(
-                //             padding: EdgeInsets.only(bottom: _navHeight),
-                //             child: ListView.builder(
-                //               controller: _scrollController,
-                //               itemBuilder: (context, index) => index == 0
-                //                   ? const Padding(
-                //                       padding: EdgeInsets.only(top: 10),
-                //                       child: CommentCard(),
-                //                     )
-                //                   : CommentCard(),
-                //               itemCount: 10,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                //   // expandPartController: _scrollController,
-                // ),
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -224,7 +168,7 @@ class _CommentInputBottomNavigationBarState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -234,7 +178,7 @@ class _CommentInputBottomNavigationBarState
       ),
       height: widget.height,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppTheme.activityScreenBg,
@@ -245,7 +189,7 @@ class _CommentInputBottomNavigationBarState
             CircleAvatar(
               backgroundImage: AssetImage(STORY_LINE[1][0]),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             const Expanded(
@@ -258,7 +202,7 @@ class _CommentInputBottomNavigationBarState
                 ),
               ),
             ),
-            Icon(Icons.send),
+            const Icon(Icons.send),
           ],
         ),
       ),
