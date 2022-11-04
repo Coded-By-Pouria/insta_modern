@@ -7,6 +7,7 @@ import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/comments.dart';
 import 'package:insta_modern/Providers/posts.dart';
 import 'package:insta_modern/utils/app_theme.dart';
+import 'package:insta_modern/utils/overlap_slider.dart';
 import 'package:insta_modern/widgets/comment_card.dart';
 import 'package:insta_modern/widgets/expandable_positioned.dart';
 import 'package:insta_modern/widgets/post_list.dart';
@@ -58,100 +59,137 @@ class _PostDetailScreenState extends State<PostDetailScreen>
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                HomePostItem(
-                  post: widget.post,
-                  useShadow: false,
-                  height: height,
-                  comments: [
-                    Comment(
-                      date: DateTime.now(),
-                      post: POSTS[0],
-                      username: "maia_",
-                      userAvatar: STORY_LINE[2][0],
-                      comment:
-                          "That was so cute man... how you get these photos ? can you learn me ?",
+                Positioned.fill(
+                  child: OverlapSlider(
+                    maxVal: height,
+                    staticPart: HomePostItem(
+                      post: widget.post,
+                      useShadow: false,
+                      height: height,
+                      comments: [
+                        Comment(
+                          date: DateTime.now(),
+                          post: POSTS[0],
+                          username: "maia_",
+                          userAvatar: STORY_LINE[2][0],
+                          comment:
+                              "That was so cute man... how you get these photos ? can you learn me ?",
+                        ),
+                        Comment(
+                          date: DateTime.now(),
+                          post: POSTS[0],
+                          username: "maia_",
+                          userAvatar: STORY_LINE[0][0],
+                          comment:
+                              "That was so cute man... how you get these photos ? can you learn me ?",
+                        ),
+                        Comment(
+                          date: DateTime.now(),
+                          post: POSTS[0],
+                          username: "maia_",
+                          userAvatar: STORY_LINE[1][0],
+                          comment:
+                              "That was so cute man... how you get these photos ? can you learn me ?",
+                        ),
+                      ],
                     ),
-                    Comment(
-                      date: DateTime.now(),
-                      post: POSTS[0],
-                      username: "maia_",
-                      userAvatar: STORY_LINE[0][0],
-                      comment:
-                          "That was so cute man... how you get these photos ? can you learn me ?",
-                    ),
-                    Comment(
-                      date: DateTime.now(),
-                      post: POSTS[0],
-                      username: "maia_",
-                      userAvatar: STORY_LINE[1][0],
-                      comment:
-                          "That was so cute man... how you get these photos ? can you learn me ?",
-                    ),
-                  ],
-                ),
-                Positioned(
-                  top: (1 - _controller.value) * (height - keyboardHeight),
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationZ(
-                            math.pi * _controller.value,
-                          ),
-                          child: IconButton(
-                            icon: Icon(Icons.arrow_drop_up),
-                            onPressed: () {
-                              setState(
-                                () {
-                                  _isExpand = !_isExpand;
-                                  switch (_controller.status) {
-                                    case AnimationStatus.completed:
-                                      _controller.reverse();
-                                      break;
-                                    case AnimationStatus.dismissed:
-                                      _controller.forward();
-                                      break;
-                                    default:
-                                  }
-                                },
-                              );
-                            },
-                          ),
+                    menu: Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        color: AppTheme.activityScreenBg,
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.mainPagePostRadius,
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                            color: AppTheme.activityScreenBg,
-                            borderRadius: BorderRadius.circular(
-                              AppTheme.mainPagePostRadius,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: _navHeight),
-                            child: ListView.builder(
-                              controller: _scrollController,
-                              itemBuilder: (context, index) => index == 0
-                                  ? const Padding(
-                                      padding: EdgeInsets.only(top: 10),
-                                      child: CommentCard(),
-                                    )
-                                  : CommentCard(),
-                              itemCount: 10,
-                            ),
-                          ),
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: _navHeight),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemBuilder: (context, index) => index == 0
+                              ? const Padding(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: CommentCard(),
+                                )
+                              : CommentCard(),
+                          itemCount: 10,
                         ),
                       ),
-                    ],
+                    ),
+                    sliderPart: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => index == 0
+                            ? const Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: CommentCard(),
+                              )
+                            : CommentCard(),
+                      ),
+                    ),
                   ),
-                  // expandPartController: _scrollController,
                 ),
+                // Positioned(
+                //   top: (1 - _controller.value) * (height - keyboardHeight),
+                //   bottom: 0,
+                //   right: 0,
+                //   left: 0,
+                //   child: Column(
+                //     children: [
+                //       Container(
+                //         alignment: Alignment.center,
+                //         child: Transform(
+                //           alignment: Alignment.center,
+                //           transform: Matrix4.rotationZ(
+                //             math.pi * _controller.value,
+                //           ),
+                //           child: IconButton(
+                //             icon: Icon(Icons.arrow_drop_up),
+                //             onPressed: () {
+                //               setState(
+                //                 () {
+                //                   _isExpand = !_isExpand;
+                //                   switch (_controller.status) {
+                //                     case AnimationStatus.completed:
+                //                       _controller.reverse();
+                //                       break;
+                //                     case AnimationStatus.dismissed:
+                //                       _controller.forward();
+                //                       break;
+                //                     default:
+                //                   }
+                //                 },
+                //               );
+                //             },
+                //           ),
+                //         ),
+                //       ),
+                //       Expanded(
+                //         child: Container(
+                //           clipBehavior: Clip.hardEdge,
+                //           decoration: BoxDecoration(
+                //             color: AppTheme.activityScreenBg,
+                //             borderRadius: BorderRadius.circular(
+                //               AppTheme.mainPagePostRadius,
+                //             ),
+                //           ),
+                //           child: Padding(
+                //             padding: EdgeInsets.only(bottom: _navHeight),
+                //             child: ListView.builder(
+                //               controller: _scrollController,
+                //               itemBuilder: (context, index) => index == 0
+                //                   ? const Padding(
+                //                       padding: EdgeInsets.only(top: 10),
+                //                       child: CommentCard(),
+                //                     )
+                //                   : CommentCard(),
+                //               itemCount: 10,
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                //   // expandPartController: _scrollController,
+                // ),
                 Positioned(
                   bottom: 0,
                   left: 0,

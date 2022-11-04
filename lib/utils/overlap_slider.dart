@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/utils/reverse_order_custom_scroll_view.dart';
 import 'package:insta_modern/utils/sliver_with_background.dart';
 
@@ -9,11 +10,13 @@ class OverlapSlider extends StatefulWidget {
   final Widget staticPart;
   final Widget sliderPart;
   final Color? backgroundColor;
+  final Widget? menu;
   const OverlapSlider({
     required this.sliderPart,
     required this.staticPart,
     required this.maxVal,
     this.backgroundColor,
+    this.menu,
     super.key,
   });
 
@@ -39,18 +42,22 @@ class _OverlapSliderState extends State<OverlapSlider> {
   }
 
   void _runAnimation(double position) {
+    _isAnimationing = true;
     Future.delayed(Duration.zero, () {
-      _controller.animateTo(
-        position,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.easeIn,
-      );
+      _controller
+          .animateTo(
+            position,
+            duration: Duration(milliseconds: 100),
+            curve: Curves.easeIn,
+          )
+          .whenComplete(() => _isAnimationing = false);
     });
   }
 
+  bool _isAnimationing = false;
   void _scrollEndHandler() {
     final value = _controller.offset;
-    if (value == 0 || value == maxVal) {
+    if (value == 0 || value == maxVal || _isAnimationing) {
       return;
     }
     if (value < maxVal / 2) {
@@ -60,16 +67,30 @@ class _OverlapSliderState extends State<OverlapSlider> {
     }
   }
 
+  bool _tapDown = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if (notification is ScrollEndNotification) {
-            _scrollEndHandler();
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollEndNotification && !_isAnimationing) {
+          _scrollEndHandler();
+        }
+        return true;
+      },
+      child: GestureDetector(
+        onTapDown: (details) {
+          if (_isAnimationing) {
+            (_controller.position as ScrollPositionWithSingleContext).goIdle();
+            _isAnimationing = false;
+            _tapDown = true;
           }
-          return true;
+        },
+        onTap: () {
+          if (_tapDown) {
+            _scrollEndHandler();
+            _tapDown = false;
+          }
         },
         child: ReverseOrderScrollView(
           controller: _controller,
@@ -83,30 +104,9 @@ class _OverlapSliderState extends State<OverlapSlider> {
               ),
             ),
             SliverWithBackGround(
-              child: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => Container(
-                    width: 300,
-                    height: 150,
-                    color: Color.fromARGB(
-                      255,
-                      Random().nextInt(255),
-                      Random().nextInt(255),
-                      Random().nextInt(255),
-                    ),
-                    child: Center(
-                      child: Text(
-                        index.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              radius: const Radius.circular(AppTheme.mainPagePostRadius),
+              color: AppTheme.activityScreenBg,
+              child: widget.sliderPart,
             ),
           ],
         ),
