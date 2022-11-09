@@ -14,3 +14,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+SOURCES 
+https://dribbble.com/shots/14188610-Instagram-Redesign-2020/attachments/5822679?mode=media
+https://dribbble.com/shots/14259674-Store-Instagram-Redesign-2020
