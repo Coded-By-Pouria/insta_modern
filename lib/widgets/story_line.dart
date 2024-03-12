@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 
 import '../DUMMY_DATA.dart';

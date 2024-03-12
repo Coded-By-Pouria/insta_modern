@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/comments.dart';
 import 'package:insta_modern/Providers/posts.dart';
-import 'package:insta_modern/screens/post_detail_screen.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/utils/custom_list_view.dart';
-import 'package:insta_modern/widgets/story_line.dart';
 
 class HomePostList extends StatelessWidget {
   const HomePostList({super.key});
@@ -32,7 +30,7 @@ class HomePostItem extends StatefulWidget {
   final Post post;
   final bool useShadow;
   final double? height;
-  List<Comment>? comments;
+  final List<Comment>? comments;
   final bool _showBottomComment;
   final bool _isMultiMedia;
   final VoidCallback? onTap;
@@ -63,7 +61,7 @@ class _HomePostItemState extends State<HomePostItem>
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
     _controller.addListener(() {
       setState(() {});
@@ -94,8 +92,6 @@ class _HomePostItemState extends State<HomePostItem>
     super.dispose();
   }
 
-  void _animationHandler() {}
-
   Widget _stackProvider(double size) {
     List<Widget> children = [];
     const sizePerRadius = 2.66;
@@ -111,7 +107,7 @@ class _HomePostItemState extends State<HomePostItem>
             width: size,
             height: size,
             child: Container(
-              padding: EdgeInsets.all(1.5),
+              padding: const EdgeInsets.all(1.5),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(br),
@@ -172,7 +168,7 @@ class _HomePostItemState extends State<HomePostItem>
     if (newPage >= 0 && newPage < widget.post.medias.length) {
       _pageController?.animateToPage(
         newPage,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.linear,
       );
     }
@@ -185,7 +181,7 @@ class _HomePostItemState extends State<HomePostItem>
 
         _controller.forward();
         Future.delayed(
-          Duration(milliseconds: 800),
+          const Duration(milliseconds: 800),
           () {
             _controller.reverse();
           },
@@ -377,7 +373,6 @@ class _PostBottomIcons extends StatelessWidget {
   final int commentsCount;
   final bool isLiked;
   const _PostBottomIcons({
-    super.key,
     required this.likesCount,
     required this.commentsCount,
     required this.isLiked,
@@ -393,7 +388,7 @@ class _PostBottomIcons extends StatelessWidget {
         ),
         Text(
           likesCount.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),
@@ -405,7 +400,7 @@ class _PostBottomIcons extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         width: 70,
         color: isLiked
-            ? Color.fromARGB(255, 207, 28, 67)
+            ? const Color.fromARGB(255, 207, 28, 67)
             : Colors.white.withAlpha(100),
         child: isLiked
             ? mainChild

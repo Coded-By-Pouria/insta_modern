@@ -48,22 +48,24 @@ class _OverlapSliderState extends State<OverlapSlider> {
 
   ScrollController? _defaultScrollController;
 
-  get controller => widget.scrollController ?? _defaultScrollController;
+  ScrollController get controller =>
+      widget.scrollController ?? _defaultScrollController!;
 
   void _runAnimation(double position, {void Function(double)? callback}) {
     _isAnimationing = true;
     Future.delayed(Duration.zero, () {
+      if (callback != null) {
+        controller.addListener(() {
+          callback(controller.offset);
+        });
+      }
       controller
-        ..addListener(() {
-          if (callback != null) {
-            callback(controller.offset);
-          }
-        })
-        ..animateTo(
-          position,
-          duration: Duration(milliseconds: 100),
-          curve: Curves.easeIn,
-        ).whenComplete(() => _isAnimationing = false);
+          .animateTo(
+            position,
+            duration: Duration(milliseconds: 100),
+            curve: Curves.easeIn,
+          )
+          .whenComplete(() => _isAnimationing = false);
     });
   }
 
@@ -99,7 +101,7 @@ class _OverlapSliderState extends State<OverlapSlider> {
             _tapDown = true;
           }
         },
-        onTap: () {
+        onTapUp: (detailts) {
           if (_tapDown) {
             _scrollEndHandler();
             _tapDown = false;

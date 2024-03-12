@@ -36,6 +36,7 @@ class _OverlayOverlapState extends State<OverlayOverlap> {
         _slideOffset += offset;
         setState(() {});
       }
+      super.initState();
     });
   }
 
@@ -43,6 +44,7 @@ class _OverlayOverlapState extends State<OverlayOverlap> {
   void dispose() {
     _controller.dispose();
     dr.dispose();
+    super.dispose();
   }
 
   void _handleDragDown(DragDownDetails details) {
