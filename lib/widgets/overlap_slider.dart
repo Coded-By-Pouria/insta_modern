@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/screens/profile_screen.dart';
-import 'package:insta_modern/utils/slider_sliver/custom_overlap_sliver.dart';
-import 'package:insta_modern/widgets/profile_highlights.dart';
 
 class OverlapSlider extends StatefulWidget {
   const OverlapSlider({super.key});

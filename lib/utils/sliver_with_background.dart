@@ -10,7 +10,6 @@ class SliverWithBackGround extends SingleChildRenderObjectWidget {
   final Radius radius;
   const SliverWithBackGround({
     super.child,
-    super.key,
     required this.color,
     required this.radius,
   });

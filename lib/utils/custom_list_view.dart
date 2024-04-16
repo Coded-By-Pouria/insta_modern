@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+///   A list view which each item place over its earlier item.
 class CustomListView extends ListView {
   CustomListView.builder({
     super.key,

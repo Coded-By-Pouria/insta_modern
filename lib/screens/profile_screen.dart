@@ -3,12 +3,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
-import 'package:insta_modern/utils/slider_sliver/custom_overlap_sliver.dart';
 import 'package:insta_modern/widgets/add_profile_widget.dart';
-import 'package:insta_modern/widgets/badge.dart';
-import 'package:insta_modern/widgets/overlap_slider.dart';
-import 'package:insta_modern/widgets/overlay_overlap.dart';
 import 'package:insta_modern/widgets/profile_highlights.dart';
+import 'package:insta_modern/widgets/badge.dart' as MyBadge;
+import 'package:overlap_snapping_sliver/overlap_snapping_scroll_widget.dart';
 
 class CustomScrollPhysics extends ScrollPhysics {
   const CustomScrollPhysics({super.parent});
@@ -62,86 +60,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     // print("Device size : ${MediaQuery.of(context).size.height}");
     return Scaffold(
-      appBar: AppBar(
-        leading: const IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: null,
-        ),
-        actions: const [
-          Badge(
-            value: "",
-            color: Colors.red,
-            child: Icon(
-              Icons.mail_outline_rounded,
-              color: Colors.grey,
-            ),
-          )
-        ],
-        title: Container(
-          constraints: const BoxConstraints(maxWidth: 120),
-          child: SvgPicture.asset("assets/svgs/logo.svg"),
-        ),
-        centerTitle: true,
-      ),
-      body: CustomOverlapSliverWidget(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        menu: Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              Icon(Icons.menu),
-              Icon(Icons.movie),
-              Icon(Icons.person),
-              Icon(Icons.link),
-              Icon(Icons.bookmark),
-              Icon(Icons.filter),
-            ],
+        appBar: AppBar(
+          leading: const IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: null,
           ),
-        ),
-        scrolls: [
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 5),
-            sliver: SliverGrid(
-              gridDelegate: SliverQuiltedGridDelegate(
-                crossAxisCount: 3,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                repeatPattern: QuiltedGridRepeatPattern.inverted,
-                pattern: [
-                  const QuiltedGridTile(2, 2),
-                  const QuiltedGridTile(1, 1),
-                  const QuiltedGridTile(1, 1),
-                ],
+          actions: const [
+            MyBadge.Badge(
+              value: "",
+              color: Colors.red,
+              child: Icon(
+                Icons.mail_outline_rounded,
+                color: Colors.grey,
               ),
-              delegate: SliverChildBuilderDelegate(
-                childCount: 3,
-                (context, index) => Image.asset(
-                  POSTS[index].medias[0],
-                  fit: BoxFit.cover,
+            )
+          ],
+          title: Container(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: SvgPicture.asset("assets/svgs/logo.svg"),
+          ),
+          centerTitle: true,
+        ),
+        body: OverlapScroll(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 5),
+              sliver: SliverGrid(
+                gridDelegate: SliverQuiltedGridDelegate(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  repeatPattern: QuiltedGridRepeatPattern.inverted,
+                  pattern: [
+                    const QuiltedGridTile(2, 2),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                  ],
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  childCount: 3,
+                  (context, index) => Image.asset(
+                    POSTS[index].medias[0],
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => Image.asset(
-                POSTS[index + 3].medias[0],
-                fit: BoxFit.cover,
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => Image.asset(
+                  POSTS[index + 3].medias[0],
+                  fit: BoxFit.cover,
+                ),
+                childCount: POSTS.length - 3,
               ),
-              childCount: POSTS.length - 3,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                crossAxisCount: 3,
+              ),
             ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-              crossAxisCount: 3,
-            ),
-          ),
-        ],
-        staticPart: const ProfileDetails(),
-      ),
-    );
+          ],
+          staticPart: const ProfileDetails(),
+        ));
   }
 }
 
@@ -225,22 +206,22 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   @override
   Widget _accountData() {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: const [
+          children: [
             Text("26,3K"),
             Text("Followers"),
           ],
         ),
-        const SizedBox(
+        SizedBox(
           width: 10,
         ),
         CustomAddProfile(profileImageUrl: "assets/images/profs/prof1.jpg"),
-        const SizedBox(
+        SizedBox(
           width: 10,
         ),
         Column(
