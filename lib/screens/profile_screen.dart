@@ -155,7 +155,6 @@ class RenderHeaderSliver extends RenderSliverSingleBoxAdapter {
         childExtent = child!.size.height;
         break;
     }
-    assert(childExtent != null);
     final double paintedChildSize =
         calculatePaintOffset(constraints, from: 0.0, to: childExtent);
     final double cacheExtent =
@@ -204,7 +203,6 @@ class ProfileDetails extends StatefulWidget {
 }
 
 class _ProfileDetailsState extends State<ProfileDetails> {
-  @override
   Widget _accountData() {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -262,8 +260,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       );
 
   Widget _profButtons() {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         Expanded(
           child: TextButton(
             onPressed: null,
@@ -309,6 +307,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   //   );
   // }
 
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -318,7 +317,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         _accountsCareer(),
         _accountDescription(),
         _profButtons(),
-        ProfileHighlightList(),
+        const ProfileHighlightList(),
       ],
     );
   }

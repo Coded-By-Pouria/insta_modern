@@ -62,8 +62,6 @@ class _ExpandablePositionedState extends State<ExpandablePositioned>
   );
   void _dragEndHandler(DragEndDetails details) {
     if (top < widget.expandLength && top > 0) {
-      print("im here mother fuckers");
-
       final start = top;
       final double end =
           top >= widget.expandLength / 2 ? widget.expandLength : 0;
@@ -72,7 +70,6 @@ class _ExpandablePositionedState extends State<ExpandablePositioned>
         vsync: this,
       )
         ..addListener(() {
-          print(top);
           top = _animationController.value;
           if ((_animationController.value - 0).abs() < tolerance.distance ||
               (_animationController.value - widget.expandLength).abs() <
