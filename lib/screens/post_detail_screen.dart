@@ -1,14 +1,15 @@
-import 'dart:math' as math;
-
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/comments.dart';
 import 'package:insta_modern/Providers/posts.dart';
 import 'package:insta_modern/utils/app_theme.dart';
-import 'package:insta_modern/utils/overlap_slider.dart';
+import 'package:insta_modern/utils/pinned_sliver_proxy.dart';
+import 'package:insta_modern/utils/sliver_with_background.dart';
 import 'package:insta_modern/widgets/comment_card.dart';
 import 'package:insta_modern/widgets/post_list.dart';
+import 'package:overlap_snapping_sliver/overlap_snapping_scroll_widget.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Post post;
@@ -22,18 +23,24 @@ class _PostDetailScreenState extends State<PostDetailScreen>
     with SingleTickerProviderStateMixin {
   // late AnimationController _controller;
   final height = 450.0;
-  final ScrollController _scrollController = ScrollController();
+  final OverlapScrollController _scrollController = OverlapScrollController();
 
   late double _scrollOffset;
-  GlobalKey<State> _gk = GlobalKey();
 
   @override
   void initState() {
     _scrollOffset = 0;
     _scrollController.addListener(() {
-      final lasOffset = _scrollOffset;
-      _scrollOffset = clampDouble(_scrollController.offset, 0, height);
-      setState(() {});
+      double lastOffset = _scrollOffset;
+      double size =
+          (_scrollController.position as OverlapScrollPosition).staticSize ??
+              height;
+
+      _scrollOffset = clampDouble(_scrollController.offset / size, 0, 1);
+
+      if (_scrollOffset != lastOffset) {
+        setState(() {});
+      }
     });
     super.initState();
   }
@@ -45,13 +52,13 @@ class _PostDetailScreenState extends State<PostDetailScreen>
     if (offset >= height) {
       _scrollController.animateTo(
         0,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         curve: Curves.linear,
       );
     } else if (offset == 0) {
       _scrollController.animateTo(
         height,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         curve: Curves.linear,
       );
     }
@@ -59,61 +66,56 @@ class _PostDetailScreenState extends State<PostDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
-      backgroundColor: AppTheme.activityScreenBg,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: OverlapSlider(
-                    scrollController: _scrollController,
-                    backgroundColor: AppTheme.activityScreenBg,
-                    maxVal: height,
-                    staticPart: HomePostItem(
-                      post: widget.post,
-                      useShadow: false,
-                      height: height,
-                      comments: [
-                        Comment(
-                          date: DateTime.now(),
-                          post: POSTS[0],
-                          username: "maia_",
-                          userAvatar: STORY_LINE[2][0],
-                          comment:
-                              "That was so cute man... how you get these photos ? can you learn me ?",
-                        ),
-                        Comment(
-                          date: DateTime.now(),
-                          post: POSTS[0],
-                          username: "maia_",
-                          userAvatar: STORY_LINE[0][0],
-                          comment:
-                              "That was so cute man... how you get these photos ? can you learn me ?",
-                        ),
-                        Comment(
-                          date: DateTime.now(),
-                          post: POSTS[0],
-                          username: "maia_",
-                          userAvatar: STORY_LINE[1][0],
-                          comment:
-                              "That was so cute man... how you get these photos ? can you learn me ?",
-                        ),
-                      ],
+        backgroundColor: AppTheme.activityScreenBg,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: OverlapScroll(
+                controller: _scrollController,
+                clipStatic: false,
+                staticPart: HomePostItem(
+                  post: widget.post,
+                  useShadow: false,
+                  height: height,
+                  comments: [
+                    Comment(
+                      date: DateTime.now(),
+                      post: POSTS[0],
+                      username: "maia_",
+                      userAvatar: STORY_LINE[2][0],
+                      comment:
+                          "That was so cute man... how you get these photos ? can you learn me ?",
                     ),
-                    menu: Container(
-                      alignment: Alignment.center,
+                    Comment(
+                      date: DateTime.now(),
+                      post: POSTS[0],
+                      username: "maia_",
+                      userAvatar: STORY_LINE[0][0],
+                      comment:
+                          "That was so cute man... how you get these photos ? can you learn me ?",
+                    ),
+                    Comment(
+                      date: DateTime.now(),
+                      post: POSTS[0],
+                      username: "maia_",
+                      userAvatar: STORY_LINE[1][0],
+                      comment:
+                          "That was so cute man... how you get these photos ? can you learn me ?",
+                    ),
+                  ],
+                ),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: MySliverPersistHeaderDelegater(
                       child: Transform(
                         alignment: Alignment.center,
                         transform: Matrix4.rotationZ(
-                          math.pi * (_scrollOffset / height),
+                          pi * (_scrollOffset),
                         ),
                         child: GestureDetector(
                           onTap: _onTapHandler,
@@ -121,32 +123,39 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                         ),
                       ),
                     ),
-                    sliderPart: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => index == 0
-                            ? const Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: CommentCard(),
-                              )
-                            : CommentCard(),
+                    pinned: true,
+                  ),
+                  PinnedSliver(
+                    child: SliverWithBackGround(
+                      radius: const Radius.circular(20),
+                      color: AppTheme.activityScreenBg,
+                      child: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) => index == 0
+                              ? const Padding(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: CommentCard(),
+                                )
+                              : index < 50
+                                  ? const CommentCard()
+                                  : null,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: CommentInputBottomNavigationBar(
-                    height: _navHeight,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: CommentInputBottomNavigationBar(
+                height: _navHeight,
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -206,5 +215,27 @@ class _CommentInputBottomNavigationBarState
         ),
       ),
     );
+  }
+}
+
+class MySliverPersistHeaderDelegater extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  MySliverPersistHeaderDelegater({required this.child});
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(alignment: Alignment.center, child: child);
+  }
+
+  @override
+  double get maxExtent => 50;
+
+  @override
+  double get minExtent => 50;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import './screens/main_screen.dart';
 
 void main() {
-  runApp(const NFTShopApp());
+  runApp(const ModernInsta());
 }
 
-class NFTShopApp extends StatelessWidget {
-  const NFTShopApp({Key? key}) : super(key: key);
+class ModernInsta extends StatelessWidget {
+  const ModernInsta({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         textTheme: const TextTheme(
-          headline1: TextStyle(
+          displayLarge: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
-          subtitle1: TextStyle(color: Colors.black, fontSize: 14),
+          displayMedium: TextStyle(color: Colors.black, fontSize: 14),
         ),
-        backgroundColor: Colors.white,
+        colorScheme: const ColorScheme.light(background: Colors.white),
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
             color: Colors.black,
@@ -31,7 +31,7 @@ class NFTShopApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }

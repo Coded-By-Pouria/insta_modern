@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/comments.dart';

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/widgets/story_line.dart';
 
@@ -11,7 +9,7 @@ class CustomAddProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Stack(
         clipBehavior: Clip.none,
         children: [

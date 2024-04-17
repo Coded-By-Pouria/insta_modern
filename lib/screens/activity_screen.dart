@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:insta_modern/Providers/activity.dart';
-import 'package:insta_modern/Providers/likes.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/widgets/custom_tab_bar.dart';
-import 'package:insta_modern/widgets/badge.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});

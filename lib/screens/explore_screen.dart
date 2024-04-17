@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/utils/app_theme.dart';
 import 'package:insta_modern/widgets/custom_tab_bar.dart';
 import 'package:insta_modern/widgets/explore_main_sliver.dart';
@@ -40,7 +36,7 @@ class _EcplorseScreenState extends State<EcplorseScreen> {
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.apps,
               color: Colors.black,
             ),
@@ -54,7 +50,7 @@ class _EcplorseScreenState extends State<EcplorseScreen> {
             SliverToBoxAdapter(
               child: CustomTabBar(
                 onTap: (index) {},
-                tabData: {
+                tabData: const {
                   "Reels": null,
                   "IGTV": null,
                   "Store": null,
@@ -62,7 +58,7 @@ class _EcplorseScreenState extends State<EcplorseScreen> {
                 },
               ),
             ),
-            ExploreMainSliver(),
+            const ExploreMainSliver(),
           ],
         ),
       ),

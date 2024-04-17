@@ -50,7 +50,7 @@ class Activities {
       comment:
           "That so nice image man. where do you get this stuffs, that so awsome. can you email some of your pictures pls. i appretiate that . my email is pppppp@gmail.com.",
       date: DateTime.now().subtract(
-        Duration(minutes: 40),
+        const Duration(minutes: 40),
       ),
       post: POSTS[2],
       userAvatar: STORY_LINE[0][0],
@@ -59,7 +59,7 @@ class Activities {
     Comment(
       comment: "very nice",
       date: DateTime.now().subtract(
-        Duration(minutes: 40),
+        const Duration(minutes: 40),
       ),
       post: POSTS[2],
       userAvatar: STORY_LINE[0][0],
@@ -68,7 +68,7 @@ class Activities {
     Comment(
       comment: "goo goo ga ga",
       date: DateTime.now().subtract(
-        Duration(minutes: 10),
+        const Duration(minutes: 10),
       ),
       post: POSTS[2],
       userAvatar: STORY_LINE[2][0],
@@ -78,7 +78,7 @@ class Activities {
       comment:
           "That so nice image man. where do you get this stuffs, that so awsome. can you email some of your pictures pls. i appretiate that . my email is pppppp@gmail.com.",
       date: DateTime.now().subtract(
-        Duration(minutes: 34),
+        const Duration(minutes: 34),
       ),
       post: POSTS[2],
       userAvatar: STORY_LINE[1][0],

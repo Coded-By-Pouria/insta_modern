@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:insta_modern/screens/activity_screen.dart';
 import 'package:insta_modern/screens/explore_screen.dart';
 import 'package:insta_modern/screens/home_screen.dart';
 import 'package:insta_modern/screens/profile_screen.dart';
-import 'package:insta_modern/widgets/post_list.dart';
-import 'package:insta_modern/widgets/story_line.dart';
-
-import '../widgets/badge.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -21,11 +16,11 @@ class _MainScreenState extends State<MainScreen> {
   int get index => _index;
 
   final _screens = <Widget>[
-    HomeScreen(),
-    EcplorseScreen(),
+    const HomeScreen(),
+    const EcplorseScreen(),
     Container(),
-    ActivityScreen(),
-    ProfileScreen()
+    const ActivityScreen(),
+    const ProfileScreen()
   ];
 
   void _navTap(int newIndex) {

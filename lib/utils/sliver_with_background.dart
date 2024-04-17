@@ -1,14 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:insta_modern/utils/reverse_order_custom_scroll_view.dart';
 
 class SliverWithBackGround extends SingleChildRenderObjectWidget {
   final Color color;
   final Radius radius;
   const SliverWithBackGround({
+    super.key,
     super.child,
     required this.color,
     required this.radius,
@@ -25,11 +23,9 @@ class SliverWithBackGround extends SingleChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RenderObject renderObject) {
-    final newHeight = MediaQuery.of(context).size.height;
     final ro = renderObject as RenderSliverWithBackGround;
     ro
       ..color = color
-      ..totalHeight = newHeight
       ..radius = radius;
     super.updateRenderObject(context, renderObject);
   }
@@ -37,7 +33,6 @@ class SliverWithBackGround extends SingleChildRenderObjectWidget {
 
 class RenderSliverWithBackGround extends RenderSliver
     with RenderObjectWithChildMixin<RenderSliver> {
-  double _totalHeight;
   Color _color;
   Radius _radius;
   RenderSliverWithBackGround({
@@ -45,11 +40,9 @@ class RenderSliverWithBackGround extends RenderSliver
     required Color color,
     required Radius radius,
   })  : _color = color,
-        _totalHeight = totalHeight,
         _radius = radius;
 
   Color get color => _color;
-  double get totalHeight => _totalHeight;
   Radius get radius => _radius;
 
   set radius(Radius newRadius) {
@@ -66,14 +59,6 @@ class RenderSliverWithBackGround extends RenderSliver
     }
   }
 
-  set totalHeight(double newHeight) {
-    if (newHeight != _totalHeight) {
-      _totalHeight = newHeight;
-      markNeedsPaint();
-      markNeedsLayout();
-    }
-  }
-
   @override
   void setupParentData(RenderObject child) {
     if (child.parentData is! SliverPhysicalParentData) {
@@ -81,7 +66,6 @@ class RenderSliverWithBackGround extends RenderSliver
     }
   }
 
-  late double _inAccessWidth;
   ClipRRectLayer? _clipLayer;
   @override
   void paint(PaintingContext context, Offset offset) {
@@ -89,21 +73,13 @@ class RenderSliverWithBackGround extends RenderSliver
       final SliverPhysicalParentData childParentData =
           child!.parentData! as SliverPhysicalParentData;
 
-      double dy = totalHeight;
-
-      final sliverParentData = parentData! as SliverPhysicalContainerParentData;
-      if (sliverParentData.previousSibling != null &&
-          sliverParentData.previousSibling is RenderOutOfOrderSliver) {
-        dy = sliverParentData.previousSibling!.geometry!.paintExtent;
-      } else {
-        dy = 0;
-      }
+      double top = offset.dy;
       _clipLayer = ClipRRectLayer(
         clipRRect: RRect.fromLTRBR(
           0,
-          max(dy, offset.dy),
-          _inAccessWidth,
-          totalHeight,
+          top,
+          constraints.crossAxisExtent,
+          geometry!.paintExtent + top,
           radius,
         ),
       );
@@ -141,11 +117,9 @@ class RenderSliverWithBackGround extends RenderSliver
   void performLayout() {
     if (child == null) {
       geometry = SliverGeometry.zero;
-      _inAccessWidth = 0;
       return;
     }
     child!.layout(constraints);
-    _inAccessWidth = constraints.crossAxisExtent;
     geometry = child!.geometry;
   }
 }

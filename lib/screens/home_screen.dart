@@ -5,9 +5,7 @@ import 'package:insta_modern/screens/post_detail_screen.dart';
 import 'package:insta_modern/utils/custom_list_view.dart';
 import 'package:insta_modern/widgets/post_list.dart';
 import 'package:insta_modern/widgets/story_line.dart';
-import 'package:insta_modern/widgets/badge.dart' as MyBadge;
-
-import '../widgets/badge.dart';
+import 'package:insta_modern/widgets/badge.dart' as mybadge;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: null,
         ),
         actions: const [
-          MyBadge.Badge(
+          mybadge.Badge(
             value: "",
             color: Colors.red,
             child: Icon(

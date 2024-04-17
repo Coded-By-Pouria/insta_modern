@@ -17,6 +17,7 @@ class _CommentCardState extends State<CommentCard> {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
+        padding: MaterialStateProperty.all(EdgeInsets.zero),
         backgroundColor: MaterialStateProperty.all(Colors.grey),
       ),
       onPressed: onPressed,
@@ -28,7 +29,7 @@ class _CommentCardState extends State<CommentCard> {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       margin: EdgeInsets.zero,
       elevation: 0,
       child: Padding(
@@ -39,11 +40,11 @@ class _CommentCardState extends State<CommentCard> {
               width: 40,
               height: 40,
               child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
                   STORY_LINE[0][0],
                   fit: BoxFit.cover,
                 ),
-                borderRadius: BorderRadius.circular(15),
               ),
             ),
             const SizedBox(
@@ -53,7 +54,7 @@ class _CommentCardState extends State<CommentCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(STORY_LINE[0][1]),
-                Text("Nice, you are so beautiful."),
+                const Text("Nice, you are so beautiful."),
               ],
             ),
             // Spacer(),
@@ -61,8 +62,8 @@ class _CommentCardState extends State<CommentCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _buttonProvider(Text("Reply"), () {}),
-                  _buttonProvider(Icon(Icons.favorite_outline), () {})
+                  _buttonProvider(const Text("Reply"), () {}),
+                  _buttonProvider(const Icon(Icons.favorite_outline), () {})
                 ],
               ),
             )

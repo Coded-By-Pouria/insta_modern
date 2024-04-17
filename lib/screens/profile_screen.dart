@@ -1,41 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/widgets/add_profile_widget.dart';
 import 'package:insta_modern/widgets/profile_highlights.dart';
-import 'package:insta_modern/widgets/badge.dart' as MyBadge;
+import 'package:insta_modern/widgets/badge.dart' as my_badge;
 import 'package:overlap_snapping_sliver/overlap_snapping_scroll_widget.dart';
 
-class CustomScrollPhysics extends ScrollPhysics {
-  const CustomScrollPhysics({super.parent});
-
-  @override
-  CustomScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return CustomScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  Simulation? createBallisticSimulation(
-      ScrollMetrics position, double velocity) {
-    final tolerance = this.tolerance;
-    if ((velocity.abs() < tolerance.velocity) ||
-        (velocity > 0.0 && position.pixels >= position.maxScrollExtent) ||
-        (velocity < 0.0 && position.pixels <= position.minScrollExtent)) {
-      return null;
-    }
-    return ClampingScrollSimulation(
-      position: position.pixels,
-      velocity: velocity,
-      friction: 0.5, // <--- HERE
-      tolerance: tolerance,
-    );
-  }
-}
-
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -66,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: null,
           ),
           actions: const [
-            MyBadge.Badge(
+            my_badge.Badge(
               value: "",
               color: Colors.red,
               child: Icon(
@@ -128,72 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 typedef ItemBuilderCallback = void Function(
     BuildContext context, int headerOffset);
-
-class HeaderSliver extends SingleChildRenderObjectWidget {
-  const HeaderSliver({super.child, super.key});
-  @override
-  RenderHeaderSliver createRenderObject(BuildContext context) {
-    return RenderHeaderSliver();
-  }
-}
-
-class RenderHeaderSliver extends RenderSliverSingleBoxAdapter {
-  @override
-  void performLayout() {
-    if (child == null) {
-      geometry = SliverGeometry.zero;
-      return;
-    }
-    // final SliverConstraints constraints = this.constraints;
-    child!.layout(constraints.asBoxConstraints(), parentUsesSize: true);
-    final double childExtent;
-    switch (constraints.axis) {
-      case Axis.horizontal:
-        childExtent = child!.size.width;
-        break;
-      case Axis.vertical:
-        childExtent = child!.size.height;
-        break;
-    }
-    final double paintedChildSize =
-        calculatePaintOffset(constraints, from: 0.0, to: childExtent);
-    final double cacheExtent =
-        calculateCacheOffset(constraints, from: 0.0, to: childExtent);
-
-    // print("constraints : ${constraints.scrollOffset}");
-    geometry = SliverGeometry(
-      scrollExtent: childExtent,
-      paintExtent: paintedChildSize,
-      cacheExtent: cacheExtent,
-      paintOrigin: constraints.scrollOffset,
-      maxPaintExtent: childExtent,
-      hitTestExtent: paintedChildSize,
-      hasVisualOverflow: childExtent > constraints.remainingPaintExtent ||
-          constraints.scrollOffset > 0.0,
-    );
-    setChildParentData(child!, constraints, geometry!);
-  }
-}
-
-class ProfilePersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // TODO: implement build
-    return ProfileDetails();
-  }
-
-  @override
-  double get maxExtent => 300;
-
-  @override
-  double get minExtent => 0;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-}
 
 class ProfileDetails extends StatefulWidget {
   const ProfileDetails({super.key});
@@ -283,29 +190,6 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       ],
     );
   }
-
-  /// before version
-  // Widget build(BuildContext context) {
-  //   return ClipRect(
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         Expanded(
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               _accountData(),
-  //               _accountsCareer(),
-  //               _accountDescription(),
-  //               _profButtons(),
-  //               ProfileHighlightList(),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

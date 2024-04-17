@@ -62,18 +62,20 @@ class ActivityCard extends StatelessWidget {
                 children: [
                   Text(
                     username,
-                    style: Theme.of(context).textTheme.headline1,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   RichText(
                     text: TextSpan(
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                       children: [
                         TextSpan(text: subtitle),
                         TextSpan(
-                            style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      color: Colors.black.withAlpha(150),
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.black.withAlpha(150),
+                                ),
                             text:
                                 "${DateTime.now().difference(date).inMinutes} min")
                       ],

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:insta_modern/DUMMY_DATA.dart';
 import 'package:insta_modern/Providers/activity.dart';
 import 'package:insta_modern/widgets/activity_card.dart';
