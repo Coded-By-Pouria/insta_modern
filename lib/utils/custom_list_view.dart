@@ -28,6 +28,8 @@ class CustomListView extends ListView {
     super.keyboardDismissBehavior,
     super.restorationId,
     super.clipBehavior,
+    super.hitTestBehavior,
+    super.itemExtentBuilder,
   }) : super.builder();
 
   @override
@@ -71,6 +73,7 @@ class CustomRenderSliverFixedExtentList extends RenderSliverFixedExtentList {
 
   @override
   int getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent) {
+    itemExtent = this.itemExtent;
     itemExtent -= 40;
     if (itemExtent > 0.0) {
       final double actual = scrollOffset / itemExtent - 1;
@@ -85,6 +88,7 @@ class CustomRenderSliverFixedExtentList extends RenderSliverFixedExtentList {
   }
 
   @override
-  double indexToLayoutOffset(double itemExtent, int index) =>
-      itemExtent * index - 40 * index;
+  double indexToLayoutOffset(double itemExtent, int index) {
+    return this.itemExtent * index - 40 * index;
+  }
 }

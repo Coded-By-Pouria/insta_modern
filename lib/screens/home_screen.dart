@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) => HomePostItem(
                 post: POSTS[index],
-                useShadow: index == 0 ? false : true,
+                useShadow: index != 0,
                 onTap: () => Navigator.of(context).push(
                   PageRouteBuilder(
                     pageBuilder: (ctx, animation, _) {

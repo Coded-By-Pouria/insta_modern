@@ -6,7 +6,7 @@ void main() {
 }
 
 class ModernInsta extends StatelessWidget {
-  const ModernInsta({Key? key}) : super(key: key);
+  const ModernInsta({super.key});
 
   @override
   Widget build(BuildContext context) {
